@@ -1,27 +1,22 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:merc_app/models/item.dart';
+import 'package:merc_app/models/items_list.dart';
 
 import '../utils/getColor.dart';
 
 class ListPage extends StatefulWidget {
-  const ListPage({Key? key}) : super(key: key);
+  final ItemsList itemsList;
+
+  const ListPage({Key? key, required this.itemsList}) : super(key: key);
 
   @override
   State<ListPage> createState() => _ListPageState();
 }
 
-class Item {
-  int id;
-  String label;
-  bool done;
-
-  Item(this.id, this.label, this.done);
-}
-
 class _ListPageState extends State<ListPage> {
   Random rng = Random();
-  List<Item> itemsList = [];
   final myController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
@@ -30,23 +25,24 @@ class _ListPageState extends State<ListPage> {
     for (var i = 0; i < 1000; i++) {
       int rand = rng.nextInt(9999);
       setState(() {
-        itemsList.add(Item(rand, rand.toString(), false));
+        widget.itemsList.items.add(Item(rand, rand.toString(), false));
       });
     }
   }
 
   void addItemToList(value) {
-    itemsList.add(Item(rng.nextInt(9999), value, false));
+    widget.itemsList.items.add(Item(rng.nextInt(9999), value, false));
   }
 
   void removeItemFromList(int id) {
-    itemsList.removeWhere((item) => item.id == id);
+    widget.itemsList.items.removeWhere((item) => item.id == id);
   }
 
   void toggleItemAsDone(int id) {
-    final int index = itemsList.indexWhere((item) => item.id == id);
+    final int index =
+        widget.itemsList.items.indexWhere((item) => item.id == id);
 
-    itemsList[index].done = !itemsList[index].done;
+    widget.itemsList.items[index].done = !widget.itemsList.items[index].done;
   }
 
   @override
@@ -57,6 +53,15 @@ class _ListPageState extends State<ListPage> {
           child: const Icon(Icons.format_color_fill)),
       appBar: AppBar(
         title: const Text("Pagina da lista de items"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+              context,
+              widget.itemsList,
+            );
+          },
+        ),
       ),
       body: Center(
         child: Padding(
@@ -105,9 +110,10 @@ class _ListPageState extends State<ListPage> {
                   //addAutomaticKeepAlives: false,
 
                   scrollDirection: Axis.vertical,
-                  itemCount: itemsList.length,
+                  itemCount: widget.itemsList.items.length,
                   itemBuilder: (item, index) {
-                    final item = itemsList.reversed.toList()[index];
+                    final item =
+                        widget.itemsList.items.reversed.toList()[index];
 
                     return Container(
                       height: 50,
@@ -118,7 +124,7 @@ class _ListPageState extends State<ListPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              item.label,
+                              item.name,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,

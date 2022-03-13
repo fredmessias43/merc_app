@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:merc_app/models/items_list.dart';
+import 'package:merc_app/utils/getColor.dart';
 
 class MiniList extends StatefulWidget {
-  final String listName;
+  final ItemsList list;
 
-  const MiniList({Key? key, required this.listName}) : super(key: key);
+  const MiniList({Key? key, required this.list}) : super(key: key);
 
   @override
   _MiniListState createState() => _MiniListState();
@@ -37,23 +40,37 @@ class _MiniListState extends State<MiniList> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    widget.listName,
-                    style: const TextStyle(fontSize: 12),
+                    // ignore: unnecessary_string_interpolations
+                    '${widget.list.name}',
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                 ),
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Container(
-                    color: Colors.red,
-                    child: const Padding(
-                      padding: EdgeInsets.only(
-                          top: 2, bottom: 2, left: 4, right: 100),
-                      child: Text(
-                        "Item 1",
-                        style: TextStyle(fontSize: 10),
-                      ),
+                SizedBox(
+                  height: 50,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: widget.list.items.length,
+                      itemBuilder: (item, index) {
+                        final item = widget.list.items.reversed.toList()[index];
+
+                        return Container(
+                          color: getColor(index),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 2, bottom: 2, left: 4, right: 100),
+                            child: Text(
+                              item.name,
+                              style: const TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  )
-                ])
+                  ),
+                ),
               ],
             ),
           ),

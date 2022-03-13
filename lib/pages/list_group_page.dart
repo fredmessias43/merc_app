@@ -2,6 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:merc_app/components/mini_list.dart';
+import 'package:merc_app/models/item.dart';
+import 'package:merc_app/models/items_list.dart';
+import 'package:merc_app/models/list_group.dart';
+import 'package:merc_app/pages/list_page.dart';
 
 class ListGroupPage extends StatefulWidget {
   const ListGroupPage({Key? key}) : super(key: key);
@@ -10,41 +14,31 @@ class ListGroupPage extends StatefulWidget {
   _ListGroupPageState createState() => _ListGroupPageState();
 }
 
-class Item {
-  int id;
-  String label;
-  bool done;
-
-  Item(this.id, this.label, this.done);
-}
-
-class ListGroup {
-  int id;
-  String name;
-  List<Item>? itemsList;
-
-  ListGroup(this.id, this.name);
-}
-
 class _ListGroupPageState extends State<ListGroupPage> {
   final _formKey = GlobalKey<FormState>();
-  Random rng = Random();
-  List<ListGroup> listGroupList = [];
   final myController = TextEditingController();
+  Random rng = Random();
+  List<ItemsList> itemsLists = [];
+  ListGroup group = ListGroup(1, "Nome da aplicação", []);
 
-  void addItemToList(String name) {
-    listGroupList.add(ListGroup(rng.nextInt(9999), name));
+  void addItemsList(String name) {
+    itemsLists.add(ItemsList(rng.nextInt(9999), name, []));
   }
 
-  void removeItemFromList(int id) {
-    listGroupList.removeWhere((item) => item.id == id);
+  void removeListGroup(int id) {
+    itemsLists.removeWhere((item) => item.id == id);
+  }
+
+  void updateListGroup(ItemsList list) {
+    itemsLists[itemsLists.indexWhere((element) => element.id == list.id)] =
+        list;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("widget.title"),
+          title: Text(group.name),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => {
@@ -95,7 +89,7 @@ class _ListGroupPageState extends State<ListGroupPage> {
                           if (_formKey.currentState!.validate()) {
                             //_formKey.currentState!.save();
                             setState(() {
-                              addItemToList(myController.text);
+                              addItemsList(myController.text);
                               myController.clear();
                             });
                             Navigator.of(context).pop();
@@ -117,23 +111,30 @@ class _ListGroupPageState extends State<ListGroupPage> {
               ),
               Expanded(
                 child: SizedBox(
-                  height: 100,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
                   child: GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: 200,
-                              childAspectRatio: 3 / 2,
+                              childAspectRatio: 1,
                               crossAxisSpacing: 20,
                               mainAxisSpacing: 20),
-                      itemCount: listGroupList.length,
+                      itemCount: itemsLists.length,
                       itemBuilder: (BuildContext context, index) {
-                        final item = listGroupList[index];
+                        final item = itemsLists[index];
 
                         return GestureDetector(
                             onTap: () {
-                              debugPrint(item.name);
+                              final Future res = Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return ListPage(itemsList: item);
+                              }));
+                              res.then((value) {
+                                debugPrint('$value');
+                              });
                             },
-                            child: MiniList(listName: item.name));
+                            child: MiniList(list: item));
                       }),
                 ),
               ),
