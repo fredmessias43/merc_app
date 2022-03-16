@@ -5,5 +5,5 @@ class ItemsList {
   String name;
   List<Item> items;
 
-  ItemsList(this.id, this.name, this.items);
+  ItemsList({required this.id, required this.name, required this.items});
 }

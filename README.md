@@ -2,11 +2,11 @@
 
 ### TODO's
 
-- [ ] add listGroups 
+- [x] add listGroups 
     - name
     - description
 
-- [ ] add a page to select the listGroup
-- [ ] transition to the minor list with the items
+- [x] add a page to select the itemsList
+- [ ] transition to the itemsList with the items
 
-- [ ] add edit in minor list
+- [ ] add edit in itemsList

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:merc_app/models/items_list.dart';
-import 'package:merc_app/utils/getColor.dart';
+import 'package:merc_app/utils/get_color.dart';
 
 class MiniList extends StatefulWidget {
   final ItemsList list;
@@ -47,7 +47,7 @@ class _MiniListState extends State<MiniList> {
                   ),
                 ),
                 SizedBox(
-                  height: 50,
+                  height: 200 - 68,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8, right: 8),
                     child: ListView.builder(
@@ -57,7 +57,7 @@ class _MiniListState extends State<MiniList> {
                         final item = widget.list.items.reversed.toList()[index];
 
                         return Container(
-                          color: getColor(index),
+                          color: item.color,
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 top: 2, bottom: 2, left: 4, right: 100),

@@ -4,7 +4,7 @@ class ListGroup {
   int id;
   String name;
 
-  List<ItemsList>? itemsLists;
+  List<ItemsList> itemsLists;
 
-  ListGroup(this.id, this.name, this.itemsLists);
+  ListGroup({required this.id, required this.name, required this.itemsLists});
 }

@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 class Item {
   int id;
   String name;
   bool done;
+  Color? color;
 
-  Item(this.id, this.name, this.done);
+  Item({required this.id, required  this.name, required  this.done, this.color});
 }

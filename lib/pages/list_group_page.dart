@@ -18,20 +18,21 @@ class _ListGroupPageState extends State<ListGroupPage> {
   final _formKey = GlobalKey<FormState>();
   final myController = TextEditingController();
   Random rng = Random();
-  List<ItemsList> itemsLists = [];
-  ListGroup group = ListGroup(1, "Nome da aplicação", []);
+  //List<ItemsList> itemsLists = [];
+  ListGroup group = ListGroup(id: 1, name: "Nome da aplicação", itemsLists: []);
 
   void addItemsList(String name) {
-    itemsLists.add(ItemsList(rng.nextInt(9999), name, []));
+    group.itemsLists
+        .add(ItemsList(id: rng.nextInt(9999), name: name, items: []));
   }
 
   void removeListGroup(int id) {
-    itemsLists.removeWhere((item) => item.id == id);
+    group.itemsLists.removeWhere((item) => item.id == id);
   }
 
   void updateListGroup(ItemsList list) {
-    itemsLists[itemsLists.indexWhere((element) => element.id == list.id)] =
-        list;
+    group.itemsLists[
+        group.itemsLists.indexWhere((element) => element.id == list.id)] = list;
   }
 
   @override
@@ -120,9 +121,9 @@ class _ListGroupPageState extends State<ListGroupPage> {
                               childAspectRatio: 1,
                               crossAxisSpacing: 20,
                               mainAxisSpacing: 20),
-                      itemCount: itemsLists.length,
+                      itemCount: group.itemsLists.length,
                       itemBuilder: (BuildContext context, index) {
-                        final item = itemsLists[index];
+                        final item = group.itemsLists[index];
 
                         return GestureDetector(
                             onTap: () {
@@ -132,6 +133,9 @@ class _ListGroupPageState extends State<ListGroupPage> {
                               }));
                               res.then((value) {
                                 debugPrint('$value');
+                                setState(() {
+                                  updateListGroup(value);
+                                });
                               });
                             },
                             child: MiniList(list: item));

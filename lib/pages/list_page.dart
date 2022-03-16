@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:merc_app/models/item.dart';
 import 'package:merc_app/models/items_list.dart';
 
-import '../utils/getColor.dart';
+import '../utils/get_color.dart';
 
 class ListPage extends StatefulWidget {
   final ItemsList itemsList;
@@ -22,16 +22,18 @@ class _ListPageState extends State<ListPage> {
   final _formKey = GlobalKey<FormState>();
 
   void fillItemsList() {
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 10; i++) {
       int rand = rng.nextInt(9999);
       setState(() {
-        widget.itemsList.items.add(Item(rand, rand.toString(), false));
+        widget.itemsList.items.add(Item(id: rand, name: rand.toString(), done: false,
+            color: getColor(widget.itemsList.items.length)));
       });
     }
   }
 
   void addItemToList(value) {
-    widget.itemsList.items.add(Item(rng.nextInt(9999), value, false));
+    widget.itemsList.items.add(Item(id: rng.nextInt(9999), name: value, done: false,
+        color: getColor(widget.itemsList.items.length)));
   }
 
   void removeItemFromList(int id) {
@@ -52,7 +54,7 @@ class _ListPageState extends State<ListPage> {
           onPressed: () => fillItemsList(),
           child: const Icon(Icons.format_color_fill)),
       appBar: AppBar(
-        title: const Text("Pagina da lista de items"),
+        title: Text(widget.itemsList.name),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -62,6 +64,12 @@ class _ListPageState extends State<ListPage> {
             );
           },
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Center(
         child: Padding(
@@ -87,19 +95,22 @@ class _ListPageState extends State<ListPage> {
                         },
                       ),
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          // Validate returns true if the form is valid, or false otherwise.
-                          if (_formKey.currentState!.validate()) {
-                            //debugPrint(_formKey.toString());
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            // Validate returns true if the form is valid, or false otherwise.
+                            if (_formKey.currentState!.validate()) {
+                              //debugPrint(_formKey.toString());
 
-                            setState(() {
-                              addItemToList(myController.text);
-                              myController.clear();
-                            });
-                          }
-                        },
-                        child: const Text("Adicionar"))
+                              setState(() {
+                                addItemToList(myController.text);
+                                myController.clear();
+                              });
+                            }
+                          },
+                          child: const Text("Adicionar")),
+                    )
                   ])),
               Expanded(
                   child: SizedBox(
@@ -117,7 +128,7 @@ class _ListPageState extends State<ListPage> {
 
                     return Container(
                       height: 50,
-                      color: getColor(index),
+                      color: item.color,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 16, right: 16),
                         child: Row(
