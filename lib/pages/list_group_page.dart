@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:merc_app/models/item.dart';
 import 'package:merc_app/models/items_list.dart';
 import 'package:merc_app/models/list_group.dart';
 import 'package:merc_app/pages/list_page.dart';
+import 'package:merc_app/services/storage.dart';
 
 class ListGroupPage extends StatefulWidget {
   const ListGroupPage({Key? key}) : super(key: key);
@@ -18,8 +20,10 @@ class _ListGroupPageState extends State<ListGroupPage> {
   final _formKey = GlobalKey<FormState>();
   final myController = TextEditingController();
   Random rng = Random();
-  //List<ItemsList> itemsLists = [];
-  ListGroup group = ListGroup(id: 1, name: "Nome da aplicação", itemsLists: []);
+
+  late ListGroup group;
+  String encoded = "";
+  Storage storage = Storage();
 
   void addItemsList(String name) {
     group.itemsLists
@@ -33,6 +37,39 @@ class _ListGroupPageState extends State<ListGroupPage> {
   void updateListGroup(ItemsList list) {
     group.itemsLists[
         group.itemsLists.indexWhere((element) => element.id == list.id)] = list;
+    debugPrint('${group.itemsLists}');
+  }
+
+  void serialize() {
+    setState(() {
+      encoded = jsonEncode(group);
+    });
+    storage.writeData(encoded);
+  }
+
+  void deserialize() {
+    storage.readData().then((String value) {
+      setState(() {
+        encoded = value;
+
+        Map<String, dynamic> json = jsonDecode(value);
+
+        debugPrint("ItemsList.fromJson(json['itemsLists']).toString()");
+        group = ListGroup.fromJson(json);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    group = ListGroup(id: 0, name: "Nome da aplicação", itemsLists: []);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    serialize();
+    super.dispose();
   }
 
   @override
@@ -106,6 +143,10 @@ class _ListGroupPageState extends State<ListGroupPage> {
           padding: const EdgeInsets.only(right: 16, left: 16, top: 8),
           child: Column(
             children: <Widget>[
+              ElevatedButton(
+                  onPressed: serialize, child: const Text("Serializar")),
+              ElevatedButton(
+                  onPressed: deserialize, child: const Text("Deserializar")),
               const Text(
                 "Lista de listas",
                 style: TextStyle(fontSize: 36),
@@ -132,7 +173,7 @@ class _ListGroupPageState extends State<ListGroupPage> {
                                 return ListPage(itemsList: item);
                               }));
                               res.then((value) {
-                                debugPrint('$value');
+                                debugPrint(value.toString());
                                 setState(() {
                                   updateListGroup(value);
                                 });
