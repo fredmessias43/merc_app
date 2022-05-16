@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Storage {
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
+    debugPrint(directory.path);
     return directory.path;
   }
 

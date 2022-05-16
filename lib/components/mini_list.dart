@@ -18,6 +18,7 @@ class _MiniListState extends State<MiniList> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
+        height: 200,
         alignment: Alignment.center,
         decoration: const BoxDecoration(
           color: Colors.grey,
@@ -47,7 +48,7 @@ class _MiniListState extends State<MiniList> {
                   ),
                 ),
                 SizedBox(
-                  height: 200 - 68,
+                  height: 98,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8, right: 8),
                     child: ListView.builder(
@@ -60,10 +61,10 @@ class _MiniListState extends State<MiniList> {
                           color: item.color,
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                top: 2, bottom: 2, left: 4, right: 100),
+                                top: 2, bottom: 2, left: 4, right: 4),
                             child: Text(
                               item.name,
-                              style: const TextStyle(fontSize: 10),
+                              style: const TextStyle(fontSize: 12),
                             ),
                           ),
                         );

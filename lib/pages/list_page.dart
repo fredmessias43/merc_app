@@ -25,14 +25,20 @@ class _ListPageState extends State<ListPage> {
     for (var i = 0; i < 10; i++) {
       int rand = rng.nextInt(9999);
       setState(() {
-        widget.itemsList.items.add(Item(id: rand, name: rand.toString(), done: false,
+        widget.itemsList.items.add(Item(
+            id: rand,
+            name: rand.toString(),
+            done: false,
             color: getColor(widget.itemsList.items.length)));
       });
     }
   }
 
   void addItemToList(value) {
-    widget.itemsList.items.add(Item(id: rng.nextInt(9999), name: value, done: false,
+    widget.itemsList.items.add(Item(
+        id: rng.nextInt(9999),
+        name: value,
+        done: false,
         color: getColor(widget.itemsList.items.length)));
   }
 
@@ -64,12 +70,12 @@ class _ListPageState extends State<ListPage> {
             );
           },
         ),
-        actions: <Widget>[
+        /* actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {},
           ),
-        ],
+        ], */
       ),
       body: Center(
         child: Padding(

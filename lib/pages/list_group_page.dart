@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:merc_app/components/mini_list.dart';
+import 'package:merc_app/components/new_list_group_dialog.dart';
 import 'package:merc_app/models/item.dart';
 import 'package:merc_app/models/items_list.dart';
 import 'package:merc_app/models/list_group.dart';
@@ -17,8 +18,6 @@ class ListGroupPage extends StatefulWidget {
 }
 
 class _ListGroupPageState extends State<ListGroupPage> {
-  final _formKey = GlobalKey<FormState>();
-  final myController = TextEditingController();
   Random rng = Random();
 
   late ListGroup group;
@@ -54,7 +53,10 @@ class _ListGroupPageState extends State<ListGroupPage> {
 
         Map<String, dynamic> json = jsonDecode(value);
 
-        debugPrint("ItemsList.fromJson(json['itemsLists']).toString()");
+        /* var auxGroup = ListGroup.fromJson(json);
+        if (auxGroup.itemsLists.isNotEmpty) {
+          group = auxGroup;
+        } */
         group = ListGroup.fromJson(json);
       });
     });
@@ -63,6 +65,7 @@ class _ListGroupPageState extends State<ListGroupPage> {
   @override
   void initState() {
     group = ListGroup(id: 0, name: "Nome da aplicação", itemsLists: []);
+    deserialize();
     super.initState();
   }
 
@@ -75,67 +78,21 @@ class _ListGroupPageState extends State<ListGroupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(group.name),
-        ),
+        appBar: AppBar(title: Text(group.name), actions: [
+          IconButton(onPressed: serialize, icon: const Icon(Icons.save)),
+        ]),
         floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
           onPressed: () => {
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: SizedBox(
-                      height: 100,
-                      child: Column(
-                        children: <Widget>[
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                const Text(
-                                  'Escreva o nome da lista a ser criada:',
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: TextFormField(
-                                    controller: myController,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter some text';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text('Fechar'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      TextButton(
-                        child: const Text('Criar'),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            //_formKey.currentState!.save();
+                  return NewListGroupDialog(
+                      onConfirm: (text) => {
                             setState(() {
-                              addItemsList(myController.text);
-                              myController.clear();
-                            });
-                            Navigator.of(context).pop();
-                          }
-                        },
-                      ),
-                    ],
-                  );
+                              addItemsList(text);
+                            })
+                          });
                 })
           },
         ),
@@ -143,10 +100,15 @@ class _ListGroupPageState extends State<ListGroupPage> {
           padding: const EdgeInsets.only(right: 16, left: 16, top: 8),
           child: Column(
             children: <Widget>[
-              ElevatedButton(
-                  onPressed: serialize, child: const Text("Serializar")),
-              ElevatedButton(
-                  onPressed: deserialize, child: const Text("Deserializar")),
+              /* Row(
+                children: [
+                  ElevatedButton(
+                      onPressed: serialize, child: const Text("Serializar")),
+                  ElevatedButton(
+                      onPressed: deserialize,
+                      child: const Text("Deserializar")),
+                ],
+              ), */
               const Text(
                 "Lista de listas",
                 style: TextStyle(fontSize: 36),
