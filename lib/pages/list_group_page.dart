@@ -64,7 +64,7 @@ class _ListGroupPageState extends State<ListGroupPage> {
 
   @override
   void initState() {
-    group = ListGroup(id: 0, name: "Nome da aplicação", itemsLists: []);
+    group = ListGroup(id: 0, name: "Lista de Mercado", itemsLists: []);
     deserialize();
     super.initState();
   }
@@ -78,7 +78,7 @@ class _ListGroupPageState extends State<ListGroupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(group.name), actions: [
+        appBar: AppBar(title: const Text("Lista de listas"), actions: [
           IconButton(onPressed: serialize, icon: const Icon(Icons.save)),
         ]),
         floatingActionButton: FloatingActionButton(
@@ -109,9 +109,9 @@ class _ListGroupPageState extends State<ListGroupPage> {
                       child: const Text("Deserializar")),
                 ],
               ), */
-              const Text(
-                "Lista de listas",
-                style: TextStyle(fontSize: 36),
+              Text(
+                group.name,
+                style: const TextStyle(fontSize: 36),
               ),
               Expanded(
                 child: SizedBox(
